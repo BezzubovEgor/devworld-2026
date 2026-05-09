@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic AI Architecture — Solace @ DevWorld 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #0D1117;
+    --surface: #161B22;
+    --surface2: #1C2333;
+    --border: #30363D;
+    --text: #E6EDF3;
+    --text-dim: #8B949E;
+    --accent: #FF9F43;
+    --accent2: #F97583;
+    --accent3: #79C0FF;
+    --accent4: #7EE787;
+    --accent5: #D2A8FF;
+    --solace-pink: #FF6B9D;
+    --solace-purple: #C084FC;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #1a0a2e 0%, #16213e 40%, #0f3460 100%);
+    padding: 80px 24px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(255,107,157,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(192,132,252,0.08) 0%, transparent 50%);
+    animation: float 20s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-2%, 2%); }
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,107,157,0.15);
+    color: var(--solace-pink);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,107,157,0.2);
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, #FF6B9D 50%, #C084FC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-meta {
+    color: var(--text-dim);
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+  .hero-meta strong { color: var(--text); }
+
+  /* Container */
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+
+  /* Section */
+  .section { margin-bottom: 60px; }
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .section h2 {
+    font-size: clamp(22px, 3.5vw, 32px);
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+  .section p {
+    color: var(--text-dim);
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  /* Thesis box */
+  .thesis {
+    background: linear-gradient(135deg, rgba(255,107,157,0.08), rgba(192,132,252,0.08));
+    border: 1px solid rgba(255,107,157,0.2);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 40px 0;
+    text-align: center;
+  }
+  .thesis-icon { font-size: 40px; margin-bottom: 12px; }
+  .thesis h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--solace-pink);
+  }
+  .thesis p { color: var(--text); font-size: 17px; max-width: 600px; margin: 0 auto; }
+
+  /* Four pillars */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .pillar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .pillar:hover {
+    transform: translateY(-4px);
+    border-color: var(--solace-pink);
+  }
+  .pillar-num {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 48px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.03);
+  }
+  .pillar-icon { font-size: 36px; margin-bottom: 12px; }
+  .pillar h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .pillar ul { list-style: none; text-align: left; }
+  .pillar li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding: 3px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .pillar li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--solace-pink);
+    font-weight: 700;
+  }
+
+  /* Iceberg */
+  .iceberg-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+  }
+  .iceberg {
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+  }
+  .iceberg-top {
+    background: linear-gradient(135deg, #2D5AA0, #4A90D9);
+    border-radius: 16px 16px 0 0;
+    padding: 28px 24px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .iceberg-top h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 4px;
+  }
+  .iceberg-top .pct { font-size: 48px; font-weight: 900; color: #fff; }
+  .iceberg-top .label { font-size: 16px; font-weight: 600; color: #79C0FF; }
+  .iceberg-water {
+    height: 6px;
+    background: linear-gradient(90deg, #1a4a7a, #2980b9, #1a4a7a);
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+  }
+  .iceberg-water::after {
+    content: '〰️〰️〰️〰️〰️〰️〰️〰️〰️〰️';
+    position: absolute;
+    font-size: 10px;
+    top: -8px;
+    left: 0;
+    width: 200%;
+    animation: wave 4s linear infinite;
+    opacity: 0.3;
+  }
+  @keyframes wave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .iceberg-bottom {
+    background: linear-gradient(180deg, #0D2137, #0A1628);
+    border-radius: 0 0 16px 16px;
+    padding: 28px 24px;
+    min-height: 280px;
+    position: relative;
+  }
+  .iceberg-bottom h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .iceberg-bottom .pct { font-size: 48px; font-weight: 900; color: var(--accent3); text-align: center; }
+  .iceberg-bottom .label { font-size: 16px; font-weight: 600; color: var(--accent); text-align: center; margin-bottom: 16px; }
+  .iceberg-items { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+  .iceberg-item {
+    background: rgba(255,159,67,0.1);
+    border: 1px solid rgba(255,159,67,0.2);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .iceberg-item-top {
+    background: rgba(121,192,255,0.1);
+    border: 1px solid rgba(121,192,255,0.2);
+    color: var(--accent3);
+  }
+  .iceberg-top .iceberg-items { margin-top: 8px; }
+
+  /* Satire box */
+  .satire {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 30px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .satire::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: 16px;
+    font-size: 120px;
+    color: rgba(255,255,255,0.03);
+    font-family: Georgia, serif;
+  }
+  .satire h4 { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--accent2); }
+  .satire .buzzwords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .buzzword {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    background: rgba(249,117,131,0.08);
+    border: 1px solid rgba(249,117,131,0.15);
+    color: var(--accent2);
+  }
+  .buzzword.highlight {
+    background: rgba(249,117,131,0.2);
+    border-color: rgba(249,117,131,0.4);
+    font-weight: 700;
+  }
+
+  /* Challenges */
+  .challenges {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .challenge {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .challenge:hover { border-color: var(--accent2); }
+  .challenge-num {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    background: rgba(249,117,131,0.15);
+    color: var(--accent2);
+  }
+  .challenge h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .challenge p { font-size: 13px; color: var(--text-dim); margin: 0; }
+
+  /* Solution cards */
+  .solutions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .solution {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    border-top: 3px solid var(--accent4);
+  }
+  .solution-icon { font-size: 28px; margin-bottom: 10px; }
+  .solution h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--accent4); }
+  .solution p { font-size: 14px; color: var(--text-dim); margin: 0; }
+
+  /* Pub/sub diagram */
+  .pubsub-diagram {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 30px 0;
+    text-align: center;
+  }
+  .pubsub-diagram h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+  .pubsub-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .agent-node {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 2px solid;
+  }
+  .agent-a { background: rgba(121,192,255,0.1); border-color: var(--accent3); }
+  .agent-b { background: rgba(126,231,135,0.1); border-color: var(--accent4); }
+  .agent-c { background: rgba(210,168,255,0.1); border-color: var(--accent5); }
+  .agent-d { background: rgba(255,159,67,0.1); border-color: var(--accent); }
+  .topic-hub {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255,107,157,0.15), rgba(192,132,252,0.15));
+    border: 2px solid var(--solace-pink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--solace-pink);
+  }
+  .topic-hub span { font-size: 28px; margin-bottom: 4px; }
+  .arrow { font-size: 24px; color: var(--text-dim); }
+  .comparison-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .comparison-item {
+    text-align: center;
+  }
+  .comparison-item .num {
+    font-size: 32px;
+    font-weight: 900;
+  }
+  .comparison-item .formula {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .comparison-item.bad .num { color: var(--accent2); }
+  .comparison-item.good .num { color: var(--accent4); }
+
+  /* Resilience */
+  .resilience-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .resilience-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .resilience-item .icon { font-size: 32px; margin-bottom: 8px; }
+  .resilience-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .resilience-item p { font-size: 12px; color: var(--text-dim); margin: 0; }
+
+  /* Product box */
+  .product-box {
+    background: linear-gradient(135deg, rgba(126,231,135,0.05), rgba(121,192,255,0.05));
+    border: 1px solid rgba(126,231,135,0.2);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 30px 0;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .product-box .icon { font-size: 48px; }
+  .product-box h4 { font-size: 18px; font-weight: 700; color: var(--accent4); margin-bottom: 4px; }
+  .product-box p { font-size: 14px; color: var(--text-dim); margin: 0; }
+  .product-tags { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .product-tag {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(126,231,135,0.1);
+    border: 1px solid rgba(126,231,135,0.2);
+    color: var(--accent4);
+  }
+
+  /* Kineto relevance */
+  .kineto-section {
+    background: linear-gradient(135deg, rgba(255,159,67,0.05), rgba(255,107,157,0.05));
+    border: 1px solid rgba(255,159,67,0.2);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 30px 0;
+  }
+  .kineto-section h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .kineto-items { display: flex; flex-direction: column; gap: 12px; }
+  .kineto-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .kineto-item .bullet {
+    min-width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255,159,67,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .kineto-item p { font-size: 14px; color: var(--text-dim); }
+  .kineto-item strong { color: var(--text); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .footer a { color: var(--accent3); text-decoration: none; }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 48px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">📍 DevWorld 2026 — RAI Amsterdam</div>
+    <h1>Agentic AI Architecture</h1>
+    <p class="hero-meta"><strong>Solace</strong> — Event-Driven Infrastructure for Multi-Agent Systems</p>
+    <p class="hero-meta">May 8, 2026 · Конспект из 9 слайдов</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Thesis -->
+  <div class="thesis">
+    <div class="thesis-icon">🎯</div>
+    <h3>Главный тезис</h3>
+    <p>AI-агенты — это распределённые системы. Им нужна серьёзная инфраструктура для коммуникации, контекста и отказоустойчивости. Event-driven архитектура — ответ.</p>
+  </div>
+
+  <!-- 1. Four Pillars -->
+  <div class="section">
+    <div class="section-label">Слайд 1–2</div>
+    <h2>Что делает AI «агентным»</h2>
+    <p>Четыре равноценных столпа — multi-agent не «nice-to-have», а core requirement.</p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-num">1</div>
+        <div class="pillar-icon">🧠</div>
+        <h4>Autonomy</h4>
+        <ul>
+          <li>Self-directed action</li>
+          <li>Proactive planning</li>
+          <li>Goal achievement</li>
+        </ul>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">2</div>
+        <div class="pillar-icon">🔧</div>
+        <h4>Tool Use</h4>
+        <ul>
+          <li>API calls</li>
+          <li>Code execution</li>
+          <li>Database queries</li>
+          <li>Web searches</li>
+        </ul>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">3</div>
+        <div class="pillar-icon">💾</div>
+        <h4>Memory</h4>
+        <ul>
+          <li>Context retention</li>
+          <li>State updates</li>
+          <li>Information recall</li>
+        </ul>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">4</div>
+        <div class="pillar-icon">🤝</div>
+        <h4>Multi Agent</h4>
+        <ul>
+          <li>Agent delegation</li>
+          <li>Task coordination</li>
+          <li>Specialist collaboration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 2. Iceberg -->
+  <div class="section">
+    <div class="section-label">Слайд 3</div>
+    <h2>AI Success Demands Context, Not Just Code</h2>
+    <p>80% проблем AI — это проблемы интеграции, а не моделей.</p>
+
+    <div class="iceberg-wrap">
+      <div class="iceberg">
+        <div class="iceberg-top">
+          <h4>ВИДИМАЯ ЧАСТЬ</h4>
+          <div class="pct">20%</div>
+          <div class="label">AI Technology</div>
+          <div class="iceberg-items">
+            <span class="iceberg-item iceberg-item-top">LLMs</span>
+            <span class="iceberg-item iceberg-item-top">Foundation Models</span>
+            <span class="iceberg-item iceberg-item-top">ML Algorithms</span>
+            <span class="iceberg-item iceberg-item-top">GenAI</span>
+            <span class="iceberg-item iceberg-item-top">Agent Frameworks</span>
+          </div>
+        </div>
+        <div class="iceberg-water"></div>
+        <div class="iceberg-bottom">
+          <h4>ПОД ВОДОЙ</h4>
+          <div class="pct">80%</div>
+          <div class="label">Context & Integration</div>
+          <div class="iceberg-items">
+            <span class="iceberg-item">Real-time Data Access</span>
+            <span class="iceberg-item">Enterprise Integration</span>
+            <span class="iceberg-item">Event-Driven Architecture</span>
+            <span class="iceberg-item">Data Context & Lineage</span>
+            <span class="iceberg-item">Cross-System Orchestration</span>
+            <span class="iceberg-item">Governance & Security</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 3. Satire -->
+  <div class="section">
+    <div class="section-label">Слайд 4</div>
+    <h2>Чего хочет Enterprise</h2>
+    <p>Саркастический список невозможных требований — боль каждого AI sales.</p>
+
+    <div class="satire">
+      <h4>«Just like ChatGPT, but made for us»</h4>
+      <div class="buzzwords">
+        <span class="buzzword">RAG-enabled</span>
+        <span class="buzzword highlight">multi-model</span>
+        <span class="buzzword">multi-modal</span>
+        <span class="buzzword highlight">fine-tuned</span>
+        <span class="buzzword">continuously self-optimizing</span>
+        <span class="buzzword highlight">context-aware-across-ALL-systems</span>
+        <span class="buzzword">trained-on-all-internal-data</span>
+        <span class="buzzword highlight">fully-GDPR-compliant</span>
+        <span class="buzzword">real-time</span>
+        <span class="buzzword">low-latency</span>
+        <span class="buzzword highlight">globally-distributed</span>
+        <span class="buzzword">explainable-yet-magically-accurate</span>
+        <span class="buzzword highlight">hallucination-free-but-still-creative</span>
+        <span class="buzzword">autonomous-but-only-when-required</span>
+        <span class="buzzword highlight">proactive-but-never-annoying</span>
+        <span class="buzzword">perfectly-governed</span>
+        <span class="buzzword">full-auditable</span>
+        <span class="buzzword highlight">enterprise-ready</span>
+        <span class="buzzword">SAP-integrated</span>
+        <span class="buzzword">zero-shot, few-shot, no-shot</span>
+        <span class="buzzword highlight">future-proof</span>
+        <span class="buzzword">infinitely-scalable</span>
+        <span class="buzzword highlight">maintained-by-nobody</span>
+        <span class="buzzword highlight">cheap</span>
+        <span class="buzzword">instant</span>
+        <span class="buzzword highlight">risk-free</span>
+        <span class="buzzword highlight">deployable-by-Friday</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 4. Challenges -->
+  <div class="section">
+    <div class="section-label">Слайд 5</div>
+    <h2>5 проблем adoption Agentic AI</h2>
+
+    <div class="challenges">
+      <div class="challenge">
+        <div class="challenge-num">1</div>
+        <div>
+          <h4>Lack of Real-Time Context</h4>
+          <p>Сложно получать актуальные контекстные данные из всей организации для AI-моделей</p>
+        </div>
+      </div>
+      <div class="challenge">
+        <div class="challenge-num">2</div>
+        <div>
+          <h4>Siloed, Rigid Infrastructure</h4>
+          <p>Изолированные модели и агенты создают разрозненные хранилища данных</p>
+        </div>
+      </div>
+      <div class="challenge">
+        <div class="challenge-num">3</div>
+        <div>
+          <h4>Slow, Bespoke Development</h4>
+          <p>Каждая команда выбирает свой способ внедрения AI — велосипедят по-своему</p>
+        </div>
+      </div>
+      <div class="challenge">
+        <div class="challenge-num">4</div>
+        <div>
+          <h4>Unpredictability</h4>
+          <p>Непредсказуемое время отклика моделей влияет на стабильность и UX</p>
+        </div>
+      </div>
+      <div class="challenge">
+        <div class="challenge-num">5</div>
+        <div>
+          <h4>Governance & Security</h4>
+          <p>Неконтролируемый доступ порождает риски безопасности, приватности и затрат</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 5. Solutions -->
+  <div class="section">
+    <div class="section-label">Слайды 6–8</div>
+    <h2>Решение: Event-Driven Architecture</h2>
+
+    <div class="solutions">
+      <div class="solution">
+        <div class="solution-icon">⚡</div>
+        <h4>Async Communication</h4>
+        <p>Оркестратор отправляет задачу → продолжает работу → получает результат когда подагент закончил. Long-running workflows на часы — тривиальны.</p>
+      </div>
+      <div class="solution">
+        <div class="solution-icon">📡</div>
+        <h4>Pub/Sub Messaging</h4>
+        <p>Агенты публикуют в топики и подписываются. Не знают друг о друге. Новые агенты добавляются без перенастройки.</p>
+      </div>
+      <div class="solution">
+        <div class="solution-icon">🔴</div>
+        <h4>Real-Time Streams</h4>
+        <p>Агенты получают операционные данные в момент события — inventory changes, транзакции, alerts. Не polling, а push.</p>
+      </div>
+      <div class="solution">
+        <div class="solution-icon">🛡️</div>
+        <h4>Fault Tolerance</h4>
+        <p>Буферизация событий, dead letter queues, изоляция плохих агентов, rate limiting зацикленных.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pub/Sub Diagram -->
+  <div class="pubsub-diagram">
+    <h4>PUB/SUB vs POINT-TO-POINT</h4>
+    <div class="pubsub-visual">
+      <div class="agent-node agent-a">🤖</div>
+      <div class="arrow">→</div>
+      <div class="topic-hub">
+        <span>📨</span>
+        Event Broker
+      </div>
+      <div class="arrow">→</div>
+      <div class="agent-node agent-b">🤖</div>
+    </div>
+    <div style="margin-top:8px">
+      <div class="pubsub-visual">
+        <div class="agent-node agent-c">🤖</div>
+        <div class="arrow">→</div>
+        <div class="topic-hub">
+          <span>📨</span>
+          Topics
+        </div>
+        <div class="arrow">→</div>
+        <div class="agent-node agent-d">🤖</div>
+      </div>
+    </div>
+    <div class="comparison-row">
+      <div class="comparison-item bad">
+        <div class="num">n(n-1)/2</div>
+        <div class="formula">Point-to-point connections</div>
+      </div>
+      <div class="comparison-item" style="align-self:center;color:var(--text-dim);font-size:24px">→</div>
+      <div class="comparison-item good">
+        <div class="num">n</div>
+        <div class="formula">Pub/Sub connections</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Resilience -->
+  <div class="section">
+    <div class="section-label">Слайд 8</div>
+    <h2>Resilience & Fault-Tolerance</h2>
+
+    <div class="resilience-grid">
+      <div class="resilience-item">
+        <div class="icon">📦</div>
+        <h4>Буферизация</h4>
+        <p>События не теряются при падении агента</p>
+      </div>
+      <div class="resilience-item">
+        <div class="icon">🚫</div>
+        <h4>Изоляция</h4>
+        <p>Плохие агенты удаляются без влияния на остальных</p>
+      </div>
+      <div class="resilience-item">
+        <div class="icon">💀</div>
+        <h4>Dead Letter Queue</h4>
+        <p>Сбои фиксируются для отладки</p>
+      </div>
+      <div class="resilience-item">
+        <div class="icon">⏱️</div>
+        <h4>Rate Limiting</h4>
+        <p>Зацикленные агенты предотвращаются</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Product -->
+  <div class="section">
+    <div class="section-label">Слайд 9</div>
+    <h2>Продукт</h2>
+
+    <div class="product-box">
+      <div class="icon">🧩</div>
+      <div>
+        <h4>Open-Source Multi-Agent Framework</h4>
+        <p>Enterprise-ready фреймворк для совместной работы мультиагентов</p>
+        <div class="product-tags">
+          <span class="product-tag">Google ADK</span>
+          <span class="product-tag">Solace AI Connector</span>
+          <span class="product-tag">Open Source</span>
+          <span class="product-tag">Enterprise-Ready</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Kineto Relevance -->
+  <div class="kineto-section">
+    <h3>⚡ Релевантность для Kineto</h3>
+    <div class="kineto-items">
+      <div class="kineto-item">
+        <div class="bullet">1</div>
+        <p><strong>Kineto уже решает часть этого</strong> — оркестрация агентов, queue modes (collect/steer/followup), concurrency control</p>
+      </div>
+      <div class="kineto-item">
+        <div class="bullet">2</div>
+        <p><strong>Pub/sub паттерн</strong> — стоит подумать для multi-agent: event bus вместо прямых вызовов</p>
+      </div>
+      <div class="kineto-item">
+        <div class="bullet">3</div>
+        <p><strong>80/20 айсберг</strong> — отличная метафора для маркетинга: «мы решаем 80% подводной части»</p>
+      </div>
+      <div class="kineto-item">
+        <div class="bullet">4</div>
+        <p><strong>DLQ для агентов</strong> — dead letter queue для failed agent tasks стоит добавить</p>
+      </div>
+      <div class="kineto-item">
+        <div class="bullet">5</div>
+        <p><strong>Google ADK</strong> — Solace строит на ADK, Kineto в экосистеме Google → потенциал совместимости</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>Конспект: <strong>Kinie-Winny</strong> ⚡ для <a href="https://bezzubovegor.github.io/devworld-2026/">DevWorld 2026 Hub</a></p>
+  <p style="margin-top:8px;">Создано на основе live-фото со слайдов · May 8, 2026</p>
+</div>
+
+</body>
+</html>
