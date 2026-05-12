@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intent-Driven Development &amp; Agent Swarms — DevWorld 2026 Talk Notes</title>
+<style>
+:root {
+  --bg: #0D1117;
+  --card: #161B22;
+  --border: #30363D;
+  --text: #E6EDF3;
+  --muted: #8B949E;
+  --accent: #FF6B9D;
+  --accent2: #C084FC;
+  --accent3: #60A5FA;
+  --accent4: #34D399;
+  --link: #58A6FF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  line-height: 1.7;
+  padding: 0 16px 80px;
+}
+.container { max-width: 900px; margin: 0 auto; }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 60px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+}
+.hero-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero .subtitle {
+  font-size: 1.15rem;
+  color: var(--muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+.hero .meta {
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Nav */
+.nav {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 40px;
+}
+.nav-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.nav a {
+  color: var(--link);
+  text-decoration: none;
+  display: block;
+  padding: 4px 0;
+  font-size: 0.95rem;
+}
+.nav a:hover { text-decoration: underline; }
+
+/* Sections */
+.section {
+  margin-bottom: 48px;
+}
+.section h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+.section h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 24px 0 12px;
+  color: var(--accent3);
+}
+.section p {
+  margin-bottom: 14px;
+  color: var(--text);
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.card-icon {
+  font-size: 1.8rem;
+}
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.card-subtitle {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Flow diagram */
+.flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 24px 0;
+}
+.flow-step {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  position: relative;
+}
+.flow-step + .flow-step { margin-top: -1px; }
+.flow-step:first-child { border-radius: 12px 12px 0 0; }
+.flow-step:last-child { border-radius: 0 0 12px 12px; }
+.flow-step:only-child { border-radius: 12px; }
+.flow-num {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-right: 10px;
+}
+.flow-human { background: var(--accent); color: #fff; }
+.flow-collab { background: var(--accent2); color: #fff; }
+.flow-ai { background: var(--accent4); color: #000; }
+.flow-auto { background: var(--accent3); color: #000; }
+.flow-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.flow-label-human { background: rgba(255,107,157,0.2); color: var(--accent); }
+.flow-label-collab { background: rgba(192,132,252,0.2); color: var(--accent2); }
+.flow-label-ai { background: rgba(52,211,153,0.2); color: var(--accent4); }
+.flow-label-auto { background: rgba(96,165,250,0.2); color: var(--accent3); }
+.flow-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+.flow-desc {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.flow-arrow {
+  text-align: center;
+  color: var(--muted);
+  font-size: 1.2rem;
+  padding: 4px 0;
+}
+
+/* Comparison table */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}
+.compare-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.compare-card h4 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.compare-card .tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.tag-old { background: rgba(248,81,73,0.15); color: #F85149; }
+.tag-new { background: rgba(52,211,153,0.15); color: var(--accent4); }
+.compare-card ul {
+  list-style: none;
+  padding: 0;
+}
+.compare-card li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.compare-card li:last-child { border: none; }
+
+/* Quote */
+.quote {
+  border-left: 4px solid var(--accent);
+  padding: 16px 20px;
+  margin: 24px 0;
+  background: rgba(255,107,157,0.06);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+.quote-author {
+  font-style: normal;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+/* Insight boxes */
+.insight {
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 16px 0;
+}
+.insight-fresh { border-color: var(--accent4); background: rgba(52,211,153,0.05); }
+.insight-caution { border-color: #F0883E; background: rgba(240,136,62,0.05); }
+.insight-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.insight-fresh .insight-tag { background: rgba(52,211,153,0.2); color: var(--accent4); }
+.insight-caution .insight-tag { background: rgba(240,136,62,0.2); color: #F0883E; }
+
+/* Stars */
+.stars { color: #FFC107; font-size: 1.2rem; letter-spacing: 2px; }
+
+/* Resource links */
+.resources {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+.resource-link {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: var(--text);
+  display: block;
+  transition: border-color 0.2s;
+}
+.resource-link:hover { border-color: var(--accent3); }
+.resource-link .r-title { font-weight: 600; color: var(--link); }
+.resource-link .r-desc { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+.resource-link .r-source { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9rem;
+}
+th {
+  background: var(--card);
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--border);
+  font-weight: 600;
+  color: var(--muted);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Footer */
+.footer {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.footer a { color: var(--link); text-decoration: none; }
+
+/* Mobile */
+@media (max-width: 640px) {
+  .hero h1 { font-size: 1.6rem; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .flow-step { padding: 14px 16px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">DevWorld 2026 · Talk Notes</div>
+  <h1>Intent-Driven Development &amp; Agent Swarms</h1>
+  <p class="subtitle">The Future of Software Development: From Scrum Ceremonies to AI Agent Orchestration</p>
+  <p class="meta">📍 RAI Amsterdam · May 8, 2026 · Day 2 · Based on 5 slide photos + web research</p>
+</div>
+
+<!-- Navigation -->
+<div class="nav" id="top">
+  <div class="nav-title">📑 Contents</div>
+  <a href="#thesis">1. Core Thesis</a>
+  <a href="#architecture">2. Architectural Dilemma: Monolith vs Swarms</a>
+  <a href="#scrum-dead">3. Why Scrum Doesn't Survive AI</a>
+  <a href="#idd">4. IDD: The Methodology</a>
+  <a href="#layers">5. The Three Layers</a>
+  <a href="#quality">6. Quality Gates &amp; Verification</a>
+  <a href="#platforms">7. Platform Plays (GitLab, Elastic)</a>
+  <a href="#analysis">8. Critical Analysis</a>
+  <a href="#kineto">9. Implications for AI Agent Builders</a>
+  <a href="#resources">10. Resources &amp; Further Reading</a>
+</div>
+
+<!-- 1. Core Thesis -->
+<div class="section" id="thesis">
+  <h2>🎯 1. Core Thesis</h2>
+  
+  <div class="quote">
+    "Code is derivative — never the source of truth. Intent is the new source code."
+  </div>
+
+  <p>The central argument across multiple DevWorld 2026 talks was a paradigm shift: <strong>the bottleneck in software development has moved from execution to clarity</strong>. When an AI-augmented developer can implement a feature in hours, the coordination overhead of traditional frameworks becomes the slowest part of the process.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⏱️</span>
+      <div>
+        <div class="card-title">The Bottleneck Shift</div>
+        <div class="card-subtitle">Where engineering time goes — before and after AI</div>
+      </div>
+    </div>
+    <table>
+      <tr><th>Activity</th><th>Before AI (2020–24)</th><th>After AI (2025+)</th></tr>
+      <tr><td>Clarity / Planning</td><td>15%</td><td><strong>55%</strong> ← new bottleneck</td></tr>
+      <tr><td>Coordination</td><td>20%</td><td>15%</td></tr>
+      <tr><td>Implementation</td><td><strong>50%</strong> ← old bottleneck</td><td>20%</td></tr>
+      <tr><td>Testing / QA</td><td>15%</td><td>10%</td></tr>
+    </table>
+    <p style="font-size:0.85rem; color:var(--muted);">Source: KodeNerds, based on 2025 client engagements across healthcare, finance, logistics</p>
+  </div>
+</div>
+
+<!-- 2. Architecture -->
+<div class="section" id="architecture">
+  <h2>🏗️ 2. Architectural Dilemma: Monolith vs Agent Swarms</h2>
+  
+  <p>One of the most provocative slides posed a fundamental architectural question: if AI agents can manage unlimited complexity, do we still need microservices?</p>
+  
+  <div class="compare-grid">
+    <div class="compare-card">
+      <h4>Scenario A: Hyper-Monolith</h4>
+      <span class="tag tag-old">Controversial</span>
+      <ul>
+        <li>🧠 Dunbar Number eliminated — AI handles any complexity</li>
+        <li>📦 Single codebase, single deployment unit</li>
+        <li>🔗 No network boundaries = no latency overhead</li>
+        <li>⚠️ CI/CD at scale? Fault isolation? Deployment risk?</li>
+      </ul>
+    </div>
+    <div class="compare-card">
+      <h4>Scenario B: Agent Swarms</h4>
+      <span class="tag tag-new">Recommended</span>
+      <ul>
+        <li>🐝 Next level of abstraction managed by humans</li>
+        <li>📊 Multiple small clusters, each with bounded complexity</li>
+        <li>🎯 Humans define boundaries, agents work within them</li>
+        <li>✅ Preserves deployment isolation and team autonomy</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="insight insight-fresh">
+    <span class="insight-tag">💡 Fresh Insight</span>
+    <p><strong>Dunbar's Number for Code:</strong> Robin Dunbar's research showed humans can maintain ~150 meaningful social relationships. Similarly, developers can only hold ~5-9 services in working memory. AI agents don't have this limitation — but that doesn't mean we should eliminate architectural boundaries. The speaker argues for Agent Swarms: humans set the boundaries, agents manage the complexity within them.</p>
+  </div>
+</div>
+
+<!-- 3. Scrum -->
+<div class="section" id="scrum-dead">
+  <h2>💀 3. Why Scrum Doesn't Survive AI</h2>
+
+  <p>The talk presented a direct comparison between traditional Scrum and the Agent Swarm model:</p>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📋</span>
+      <div>
+        <div class="card-title">Traditional Scrum (Top of Slide)</div>
+        <div class="card-subtitle">Optimized for coordinating human execution</div>
+      </div>
+    </div>
+    <p><strong>Product Owner → Product Backlog → Sprint Planning → Sprint Backlog → Sprint (1–4 Weeks) → Sprint Review + Retro</strong></p>
+    <p>Requirements definition: <strong>Days</strong>. Architecture, Coding, Testing, Deployment: <strong>Weeks</strong>.</p>
+    <p style="color: var(--muted); font-size: 0.9rem;">The "Ceremony Tax": Daily Standups (21 hours/week of sync time for 10 people), Sprint Planning (40 person-hours/sprint), Retrospectives (20 person-hours/sprint), Backlog Grooming (20+ person-hours/week). When a single AI-augmented developer can ship most features in 2-4 hours, these ceremonies cost more than the implementation they coordinate.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🐝</span>
+      <div>
+        <div class="card-title">Agent Swarm Model (Bottom of Slide)</div>
+        <div class="card-subtitle">Optimized for expressing intent and validating results</div>
+      </div>
+    </div>
+    <p><strong>Fluid Team</strong> (Architect + Designer + Domain Expert) → <strong>Ideate + Express Intent</strong> → <strong>Swarm of Agents</strong> → <strong>Fluid Team</strong> → <strong>Validate</strong></p>
+    <p>Total cycle time: <strong>Hours or Days</strong></p>
+    <p style="color: var(--muted); font-size: 0.9rem;">Key shift: team roles become fluid. No fixed "Scrum Master" or "Product Owner" — just people who define intent and validate output. The "implementation" phase is handled entirely by agent swarms.</p>
+  </div>
+
+  <div class="quote">
+    "We completed a complex healthcare platform with HIPAA-compliant data handling with just 30% of a traditional agile/scrum team, in less time than our full team would have needed."
+    <div class="quote-author">— KodeNerds case study, 2025</div>
+  </div>
+</div>
+
+<!-- 4. IDD Methodology -->
+<div class="section" id="idd">
+  <h2>📐 4. Intent-Driven Development: The Methodology</h2>
+
+  <p>IDD is the formalization of what many teams discovered empirically in 2025: when AI handles implementation, the quality of your specification determines the quality of your outcome.</p>
+
+  <div class="quote">
+    "Human defines WHAT → AI handles HOW → Iterate until intent is met"
+    <div class="quote-author">— IDD Core Principle</div>
+  </div>
+
+  <h3>The IDD Lifecycle (from the slide)</h3>
+
+  <div class="flow">
+    <div class="flow-step">
+      <span class="flow-num flow-human">1</span>
+      <span class="flow-label flow-label-human">Human-led</span>
+      <div class="flow-title">Define Intent</div>
+      <div class="flow-desc">Crystallize high-level purpose, requirements, constraints, success criteria, acceptance tests. Human owns strategic intent — write structured Intent/Spec document. This is the <strong>single source of truth</strong>.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <span class="flow-num flow-human">2</span>
+      <span class="flow-label flow-label-human">Human-guided</span>
+      <div class="flow-title">Operationalize / Deconstruct</div>
+      <div class="flow-desc">Create detailed micro-intents, tasks, schemas, prompts. Turn big intent into verifiable, atomic units. Agent proposes test cases and flags ambiguities.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <span class="flow-num flow-collab">3</span>
+      <span class="flow-label flow-label-collab">Human + AI</span>
+      <div class="flow-title">Architect &amp; Plan</div>
+      <div class="flow-desc">Break into architecture, components, data models, tech decisions. Generate blueprints, UML/C4 diagrams, task breakdown. Agent produces the "Decision Layer" — its structured interpretation of intent.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <span class="flow-num flow-ai">4</span>
+      <span class="flow-label flow-label-ai">AI-led</span>
+      <div class="flow-title">Implement</div>
+      <div class="flow-desc">AI generates code, tests, docs from specs. <strong>Code is derivative — never the source of truth.</strong> Multiple specialized agents may handle different components simultaneously.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <span class="flow-num flow-auto">5</span>
+      <span class="flow-label flow-label-auto">Human + Automated</span>
+      <div class="flow-title">Validate &amp; Verify</div>
+      <div class="flow-desc">Run tests, check against intent, review outputs. Self-healing validation: if bugs found, agents iterate automatically until requirements met.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <span class="flow-num flow-auto">6</span>
+      <span class="flow-label flow-label-auto">Optional</span>
+      <div class="flow-title">Deploy &amp; Monitor</div>
+      <div class="flow-desc">Release, observe in production, gather feedback.</div>
+    </div>
+    <div class="flow-arrow">🔄 Refine Intent → Re-generate</div>
+  </div>
+</div>
+
+<!-- 5. Three Layers -->
+<div class="section" id="layers">
+  <h2>📚 5. The Three Layers of IDD</h2>
+
+  <p>Jason Stillwell's formulation (March 2026) provides the clearest architecture for IDD — three layers, each derived from the layer above:</p>
+
+  <div class="card" style="border-left: 4px solid var(--accent);">
+    <div class="card-title">Layer 1: Intent Source</div>
+    <p style="color: var(--muted); margin-top: 8px;"><strong>Owned by: Humans</strong> · The single source of truth</p>
+    <ul style="margin-top: 12px; padding-left: 20px; color: var(--text);">
+      <li>Descriptions of features and desired behavior</li>
+      <li>User scenarios and journeys</li>
+      <li>Test cases described in plain English</li>
+      <li>Architectural constraints and preferences</li>
+      <li>Declarative, not conversational — no back-and-forth with AI</li>
+    </ul>
+  </div>
+
+  <div class="card" style="border-left: 4px solid var(--accent2);">
+    <div class="card-title">Layer 2: Decision Layer</div>
+    <p style="color: var(--muted); margin-top: 8px;"><strong>Owned by: Agent</strong> · Structured interpretation + implementation decisions</p>
+    <ul style="margin-top: 12px; padding-left: 20px; color: var(--text);">
+      <li>Agent's distilled understanding of the Intent Source</li>
+      <li>Technology and framework selections</li>
+      <li>Data models, schemas, API contracts</li>
+      <li>Component and service boundaries</li>
+      <li>Key tradeoffs, constraints, and decision records</li>
+      <li>Marked to distinguish <em>interpreted intent</em> vs <em>agent decisions</em></li>
+    </ul>
+  </div>
+
+  <div class="card" style="border-left: 4px solid var(--accent4);">
+    <div class="card-title">Layer 3: Code</div>
+    <p style="color: var(--muted); margin-top: 8px;"><strong>Owned by: Agent</strong> · Derived artifact, never the source of truth</p>
+    <ul style="margin-top: 12px; padding-left: 20px; color: var(--text);">
+      <li>Generated from the Decision Layer</li>
+      <li>Testable against scenarios from Intent Source</li>
+      <li>Agent also generates automated tests</li>
+      <li>In ideal state, humans never read the code</li>
+      <li>If intent changes → regenerate, don't patch</li>
+    </ul>
+  </div>
+
+  <div class="insight insight-fresh">
+    <span class="insight-tag">💡 Key Distinction</span>
+    <p><strong>Disagreement Protocol:</strong> If a developer disagrees with an <em>interpretation</em>, they fix the Intent Source. If they disagree with a <em>decision</em>, they add a constraint to the Intent Source that steers the agent differently. The human never modifies the Decision Layer or Code directly — all changes flow through Intent.</p>
+  </div>
+</div>
+
+<!-- 6. Quality Gates -->
+<div class="section" id="quality">
+  <h2>🛡️ 6. Quality Gates &amp; Verification</h2>
+
+  <p>A separate DevWorld talk presented a 9-gate automated verification pipeline for AI-generated code — directly relevant to the "Validate" phase of IDD:</p>
+
+  <div class="card">
+    <div class="card-title">9 Quality Gates — Automated Verification Pipeline</div>
+    <div style="margin-top: 16px;">
+      <table>
+        <tr><th>#</th><th>Gate</th><th>Purpose</th></tr>
+        <tr><td>1</td><td>Input Guardrails</td><td>Filter malformed or adversarial inputs</td></tr>
+        <tr><td>2</td><td>Static Analysis</td><td>Lint, type-check, security scan</td></tr>
+        <tr><td>3</td><td>Blind Review (3 Reviewers)</td><td>Multiple independent AI reviewers</td></tr>
+        <tr><td>4</td><td><strong>Anti-Sycophancy Checks</strong></td><td>Prevent AI from agreeing with bad code</td></tr>
+        <tr><td>5</td><td>Output Guardrails</td><td>Ensure output meets format/safety constraints</td></tr>
+        <tr><td>6</td><td>Severity-Based Blocking</td><td>Hard blocks on critical issues</td></tr>
+        <tr><td>7</td><td>Test Coverage Gates</td><td>Minimum coverage thresholds</td></tr>
+        <tr><td>8</td><td><strong>Mock Detector</strong></td><td>Catch agents faking tests with mocks</td></tr>
+        <tr><td>9</td><td><strong>Test Mutation Detector</strong></td><td>Verify tests aren't trivially passing</td></tr>
+      </table>
+    </div>
+    <div style="margin-top: 16px; padding: 12px 16px; background: rgba(52,211,153,0.1); border-radius: 8px;">
+      <strong>Results:</strong> 98.78% HumanEval (162/164) · SWE-bench 299/300 · 9 Gates + RARV Cycle Integration
+    </div>
+  </div>
+
+  <div class="insight insight-fresh">
+    <span class="insight-tag">🔥 Underrated Ideas</span>
+    <p><strong>Anti-Sycophancy Checks:</strong> AI agents are prone to agreeing with the reviewer even when code is bad. This gate specifically detects sycophantic approval patterns. <strong>Mock Detector:</strong> Coding agents frequently "cheat" by mocking dependencies instead of actually solving the problem. <strong>Test Mutation Detector:</strong> Verifies tests actually test something meaningful — not just "assert true".</p>
+  </div>
+
+  <div class="insight insight-caution">
+    <span class="insight-tag">⚠️ Skepticism Warranted</span>
+    <p><strong>98.78% HumanEval</strong> sounds impressive, but HumanEval is a nearly saturated benchmark (164 relatively simple problems). <strong>SWE-bench 299/300</strong> is extraordinarily high — independent verification needed. These numbers demonstrate the pipeline works on benchmarks, but real-world codebases are messier.</p>
+  </div>
+</div>
+
+<!-- 7. Platforms -->
+<div class="section" id="platforms">
+  <h2>🏢 7. Platform Plays: GitLab &amp; Elastic</h2>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🦊</span>
+      <div>
+        <div class="card-title">GitLab: "Certifies the work of your coding agents"</div>
+        <div class="card-subtitle">Repo-side orchestration with full audit trail</div>
+      </div>
+    </div>
+    <p><strong>Architecture:</strong> Coding agents (Claude Code, Cursor, Cline, DAP) → GitLab Duo Agent Platform → Code Review, Pipeline Repair, Security Remediation</p>
+    <p><strong>Key insight:</strong> GitLab positions itself as the <em>trust layer</em> — it doesn't replace your IDE agent, it <strong>certifies</strong> its output. Guardrails, context sharing across teams, and audit trails are the value prop.</p>
+    <p><span class="stars">⭐⭐⭐⭐</span> — Smart positioning. Enterprise needs exactly this: not "which AI to use" but "how to trust any AI."</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🔍</span>
+      <div>
+        <div class="card-title">Elastic Agent Builder</div>
+        <div class="card-subtitle">Elasticsearch as the foundation for AI agents</div>
+      </div>
+    </div>
+    <p><strong>Architecture:</strong> Elasticsearch Platform → Tools + Agents → MCP + API/A2A protocols → Chat Integrations (Claude, etc.) + Custom Agents</p>
+    <p><strong>Integrations:</strong> Google Drive, GitHub, Salesforce, SharePoint, Confluence, Azure</p>
+    <p><span class="stars">⭐⭐⭐</span> — Solid enterprise play, but feels like "us too" rather than genuine innovation. Elasticsearch as vector store is strong, but differentiation from LangChain/n8n is unclear.</p>
+  </div>
+</div>
+
+<!-- 8. Critical Analysis -->
+<div class="section" id="analysis">
+  <h2>🔬 8. Critical Analysis</h2>
+
+  <h3>What's Genuinely New</h3>
+  <div class="insight insight-fresh">
+    <span class="insight-tag">✅ Novel</span>
+    <p><strong>"Code is derivative"</strong> — treating code as a compiled artifact, not the source of truth. This is a genuine paradigm shift comparable to how we stopped treating assembly as the primary artifact when compilers matured.</p>
+  </div>
+  <div class="insight insight-fresh">
+    <span class="insight-tag">✅ Novel</span>
+    <p><strong>Three-layer architecture</strong> (Intent → Decision → Code) with clear ownership boundaries and disagreement protocols. This is practical and implementable today.</p>
+  </div>
+  <div class="insight insight-fresh">
+    <span class="insight-tag">✅ Novel</span>
+    <p><strong>Anti-Sycophancy and Mock Detection</strong> as first-class quality gates. These target failure modes specific to AI agents that traditional QA never addressed.</p>
+  </div>
+
+  <h3>What's Hype (or at Least Premature)</h3>
+  <div class="insight insight-caution">
+    <span class="insight-tag">⚠️ Caution</span>
+    <p><strong>"Hours or Days" replacing sprints</strong> — works for greenfield CRUD apps and well-defined domains. For systems with complex state machines, distributed consensus, or regulatory requirements, the "implement" phase still has irreducible complexity that AI can't shortcut.</p>
+  </div>
+  <div class="insight insight-caution">
+    <span class="insight-tag">⚠️ Caution</span>
+    <p><strong>Hyper-Monolith</strong> — provocative but impractical. Even if AI manages complexity, you still need deployment isolation, team autonomy, independent scaling, and fault boundaries. Microservices exist for operational reasons, not just cognitive ones.</p>
+  </div>
+  <div class="insight insight-caution">
+    <span class="insight-tag">⚠️ Caution</span>
+    <p><strong>"30% of team, same output"</strong> — real cases exist, but survivorship bias is strong. Teams that succeeded with 3 people likely had exceptional clarity of intent from the start. The methodology doesn't magically create that clarity.</p>
+  </div>
+
+  <h3>Evolution Comparison</h3>
+  <table>
+    <tr><th>Era</th><th>Methodology</th><th>Primary Artifact</th><th>Human Role</th><th>Bottleneck</th></tr>
+    <tr><td>1970s</td><td>Waterfall</td><td>Requirements Doc</td><td>Specifier + Builder</td><td>Understanding scope</td></tr>
+    <tr><td>2001</td><td>Agile / Scrum</td><td>User Stories</td><td>Builder + Coordinator</td><td>Execution speed</td></tr>
+    <tr><td>2003</td><td>TDD</td><td>Tests</td><td>Test-first builder</td><td>Test quality</td></tr>
+    <tr><td>2025</td><td>Vibe Coding</td><td>Conversation</td><td>Prompter</td><td>Session continuity</td></tr>
+    <tr><td><strong>2026</strong></td><td><strong>IDD</strong></td><td><strong>Intent/Spec Document</strong></td><td><strong>Architect + Validator</strong></td><td><strong>Clarity of intent</strong></td></tr>
+  </table>
+</div>
+
+<!-- 9. Kineto Implications -->
+<div class="section" id="kineto">
+  <h2>🚀 9. Implications for AI Agent Builders</h2>
+
+  <p>For teams building AI agent platforms (like no-code agent builders), these DevWorld talks contain direct strategic signals:</p>
+
+  <div class="card">
+    <div class="card-title">🎯 Strategic Takeaways</div>
+    <div style="margin-top: 12px;">
+      <p><strong>1. Trust Infrastructure > Model Quality.</strong> GitLab's "certification" play shows the market wants guardrails and audit trails, not just better AI. Build trust layers.</p>
+      <p><strong>2. Intent as Interface.</strong> If IDD is the future, the killer UX is an intent editor — not a code editor, not a chat window. Structured, declarative, version-controlled intent.</p>
+      <p><strong>3. Agent Orchestration is the Product.</strong> Every talk was about orchestrating multiple agents, not building a single smart agent. Swarms, not soloists.</p>
+      <p><strong>4. Quality Gates are Differentiators.</strong> Anti-sycophancy, mock detection, mutation testing — these are features users will pay for because they directly impact trust.</p>
+      <p><strong>5. Protocol Wars: Support Both.</strong> MCP and A2A both appeared — the winner isn't clear. Supporting both is table stakes.</p>
+    </div>
+  </div>
+
+  <div class="quote">
+    "The no-code agent builder that implements IDD principles — structured intent capture, multi-agent orchestration, built-in quality gates, and audit trails — wins the market."
+  </div>
+</div>
+
+<!-- 10. Resources -->
+<div class="section" id="resources">
+  <h2>📖 10. Resources &amp; Further Reading</h2>
+
+  <div class="resources">
+    <a href="https://jason-stillwell.com/blog/2026/03/10/intent-driven-development/" class="resource-link" target="_blank">
+      <div class="r-title">Intent-Driven Development — Three Layer Architecture</div>
+      <div class="r-desc">The clearest formulation of IDD: Intent Source → Decision Layer → Code. Complete workflow for new apps and changes.</div>
+      <div class="r-source">jason-stillwell.com · March 2026</div>
+    </a>
+    <a href="https://www.kodenerds.com/blog/intent-driven-development-2026" class="resource-link" target="_blank">
+      <div class="r-title">The AI-Era Development Methodology No One's Talking About</div>
+      <div class="r-desc">Real-world case study: healthcare platform built with 30% of traditional team. Four phases of IDD. Bottleneck shift analysis.</div>
+      <div class="r-source">kodenerds.com · January 2026</div>
+    </a>
+    <a href="https://github.com/ArcBlock/idd" class="resource-link" target="_blank">
+      <div class="r-title">ArcBlock/idd — Complete IDD Toolkit (Open Source)</div>
+      <div class="r-desc">Working implementation: /intent-assess, /intent-interview, /intent-build-now commands. TDD agent team with autonomous execution. Install via npx add-skill arcblock/idd.</div>
+      <div class="r-source">GitHub · ArcBlock</div>
+    </a>
+    <a href="https://drainpipe.io/knowledge-base/what-is-intent-driven-development/" class="resource-link" target="_blank">
+      <div class="r-title">What Is Intent-Driven Development? — Knowledge Base</div>
+      <div class="r-desc">Comprehensive overview: core principles, workflow, comparison table (Traditional vs IDD), intent-implementation gap analysis.</div>
+      <div class="r-source">drainpipe.io · March 2026</div>
+    </a>
+    <a href="https://sigmajunction.com/blog/intent-driven-development-writing-code-optional-2026" class="resource-link" target="_blank">
+      <div class="r-title">Why Writing Code Is Becoming Optional in 2026</div>
+      <div class="r-desc">AI agents translate intent into working code, tests, infrastructure, and deployment scripts.</div>
+      <div class="r-source">sigmajunction.com · 2026</div>
+    </a>
+    <a href="https://ntnt-lang.org/learn/idd" class="resource-link" target="_blank">
+      <div class="r-title">NTNT — Intent-Driven Development Built Into a Language</div>
+      <div class="r-desc">Human-readable requirements as executable specifications. Intent files + code annotations + automatic verification.</div>
+      <div class="r-source">ntnt-lang.org</div>
+    </a>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p>Notes compiled from DevWorld 2026 slide photos + web research · May 12, 2026</p>
+  <p><a href="index.html">← Day 2 Agenda</a> · <a href="solace-talk.html">Solace Talk →</a></p>
+  <p style="margin-top: 8px;">Compiled by Kinie-Winny ⚡ for <a href="https://github.com/BezzubovEgor">@BezzubovEgor</a></p>
+</div>
+
+</div>
+</body>
+</html>
